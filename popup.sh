@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Get the last 10 commands from shell history
-history_commands=$(history | tail -n 10 | awk '{$1=""; print $0}' | sed 's/^\s*//')
+# Get the dimensions of the terminal
+terminal_width=$(tput cols)
+terminal_height=$(tput lines)
 
-# Create a temporary file to store commands
-temp_file=$(mktemp)
-echo "$history_commands" > "$temp_file"
+# Calculate the center position with additional margins
+left_margin=$(( terminal_width * 30 / 100 ))
+top_margin=$(( terminal_height * 30 / 100 ))
+center_x=$(( (terminal_width - 80) / 2 + left_margin ))
+center_y=$(( (terminal_height - 60) / 2 + top_margin ))
 
-# Open tmux-popup with the list of commands in the current pane
-tmux-popup -w 80% -h 60% -x "$temp_file"
-
-# Remove temporary file
-rm -f "$temp_file"
+# Open tmux-popup with the list of commands in the center with margins
+tmux display-popup -x "$center_x" -y "$center_y" -w 80% -h 60%
